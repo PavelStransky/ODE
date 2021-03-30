@@ -38,7 +38,7 @@ def local_error(ys, ts, analytical_solution):
         ys -- function values to be compared
         ts -- independent variable
     """
-    return [y - analytical_solution(t) for y, t in zip(ys, ts)]
+    return ys - analytical_solution(ts)
 
 
 def average_cummulative_error(ys, ts, analytical_solution):
@@ -48,16 +48,17 @@ def average_cummulative_error(ys, ts, analytical_solution):
         ys -- function values to be compared
         ts -- independent variable
     """
-    residua = [le**2 for le in local_error(ys, ts, analytical_solution)]
+    residua = local_error(ys, ts, analytical_solution)**2
     return np.sqrt(sum(residua) / len(residua))
 
 
-def plot_compare_methods(model, initial_condition, analytical_solution=None, integrators=[ode.euler_1, ode.euler_2, ode.runge_kutta_4], **kwargs):
+def plot_compare_methods(model, initial_condition, index=0, analytical_solution=None, integrators=[ode.euler_1, ode.euler_2, ode.runge_kutta_4], **kwargs):
     """ Compares solutions for different ODE methods in one graph.
 
         Arguments:
         model -- a function returning the right-hand side of the ODE
         analytical_solution -- exact solution of the ODE (if available)
+        index -- for a set of ODE the index of the function to be plotted
         kwargs -- addtitional parameters for ode_solve function (step, times, etc)
     """
 
@@ -70,6 +71,8 @@ def plot_compare_methods(model, initial_condition, analytical_solution=None, int
     ts = None
     for integrator in integrators:
         ys, ts = ode.ode_solve(model, initial_condition, integrator=integrator, **kwargs)
+        if ys.ndim != 1:
+            ys = ys[:, index]
 
         main_panel.plot(ts, ys, label=integrator.__name__)
 
@@ -92,12 +95,13 @@ def plot_compare_methods(model, initial_condition, analytical_solution=None, int
     plt.show()
 
 
-def plot_compare_steps(model, initial_condition, integrator, analytical_solution=None, dts=(0.5, 0.2, 0.1), **kwargs):
+def plot_compare_steps(model, initial_condition, integrator, index=0, analytical_solution=None, dts=(0.5, 0.2, 0.1), **kwargs):
     """ Compares solutions for different ODE methods in one graph.
 
         Arguments:
         model -- a function returning the right-hand side of the ODE
         analytical_solution -- exact solution of the ODE (if available)
+        index -- for a set of ODE the index of the function to be plotted
         kwargs -- addtitional parameters for ode_solve function (step, times, etc)
     """
 
@@ -110,6 +114,8 @@ def plot_compare_steps(model, initial_condition, integrator, analytical_solution
     ts = None
     for dt in dts:
         ys, ts = ode.ode_solve(model, initial_condition, integrator=integrator, dt=dt, **kwargs)
+        if ys.ndim != 1:
+            ys = ys[:, index]
 
         main_panel.plot(ts, ys, label=f"$dt={dt}$")
 
@@ -133,12 +139,13 @@ def plot_compare_steps(model, initial_condition, integrator, analytical_solution
     plt.show()
 
 
-def plot_cummulative_error(model, initial_condition, analytical_solution, integrators=[ode.euler_1, ode.euler_2, ode.runge_kutta_4], dts=np.linspace(0.002, 0.1, 100), **kwargs):
+def plot_cummulative_error(model, initial_condition, analytical_solution, index=0, integrators=[ode.euler_1, ode.euler_2, ode.runge_kutta_4], dts=np.linspace(0.002, 0.1, 100), **kwargs):
     """ Compares solutions for different ODE methods in one graph.
 
         Arguments:
         model -- a function returning the right-hand side of the ODE
         analytical_solution -- exact solution of the ODE (if available)
+        index -- for a set of ODE the index of the function to be plotted
         kwargs -- addtitional parameters for ode_solve function (step, times, etc)
     """
 
@@ -149,6 +156,9 @@ def plot_cummulative_error(model, initial_condition, analytical_solution, integr
         errors = []
         for dt in dts:
             ys, ts = ode.ode_solve(model, initial_condition, integrator=integrator, dt=dt, **kwargs)
+
+            if ys.ndim != 1:
+                ys = ys[:, index]
 
             errors.append(average_cummulative_error(ys, ts, analytical_solution))
 
