@@ -2,6 +2,7 @@ import ode
 
 
 def relaxation(y, t):
+    """ Derivatives for the relaxation system """
     return -y
 
 
