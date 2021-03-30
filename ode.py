@@ -18,10 +18,3 @@ def ode_solve(model, initial_condition, integrator=euler_1, dt=0.1, maxt=10):
         ts.append(t)                        # Store time
             
     return ys, ts
-
-
-def relaxation(y, t):
-    return -y
-
-
-ys, ts = ode_solve(relaxation, 1)
