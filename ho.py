@@ -11,6 +11,8 @@ def ho(y, t):
 def analytical_solution(t):
     return np.sin(t)
 
-graphs.plot_compare_methods(ho, (0, 1), index=0, analytical_solution=analytical_solution, dt=0.5)
-graphs.plot_compare_steps(ho, (0, 1), ode.euler_1, analytical_solution=analytical_solution)
-graphs.plot_cummulative_error(ho, (0, 1), analytical_solution, index=0)
+maxt=30
+
+graphs.plot_compare_methods(ho, (0, 1), index=0, analytical_solution=analytical_solution, dt=0.5, maxt=maxt)
+graphs.plot_compare_steps(ho, (0, 1), ode.euler_1, analytical_solution=analytical_solution, maxt=maxt)
+graphs.plot_cummulative_error(ho, (0, 1), analytical_solution, index=0, maxt=maxt)
