@@ -1,3 +1,5 @@
+import numpy as np
+
 def euler_1(model, y, t, dt):
     """ First-order Euler method """
     y1 = y + model(y, t) * dt
@@ -27,7 +29,7 @@ def runge_kutta_4(model, y, t, dt):
     return y1, t1
 
 
-def ode_solve(model, initial_condition, integrator=euler_1, dt=0.1, maxt=10):
+def ode_solve(model, initial_condition, integrator=runge_kutta_4, dt=0.1, maxt=10):
     """ Numerical solution of a differential equation by the specified integrator.
 
         Arguments:
@@ -39,7 +41,7 @@ def ode_solve(model, initial_condition, integrator=euler_1, dt=0.1, maxt=10):
         list with solution [y0, y1, y2, ...]
         list with times [t0, t1, y2, ...]
     """
-    y = initial_condition                   # Initial conditions
+    y = np.array(initial_condition)         # Initial conditions
     ys = [y]                                # List with results
     
     t = 0                                   # Actual time
@@ -51,4 +53,4 @@ def ode_solve(model, initial_condition, integrator=euler_1, dt=0.1, maxt=10):
         ys.append(y)                        # Store position
         ts.append(t)                        # Store time
             
-    return ys, ts
+    return np.array(ys), np.array(ts)
